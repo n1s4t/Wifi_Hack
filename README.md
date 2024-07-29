@@ -6,25 +6,13 @@
 ### Installation :
 
 ```
-apt update && apt upgrade
+pkg install wget -y
 ```
 ```
-pkg install -y root-repo
+wget https://raw.githubusercontent.com/n1s4t/Youtube-dl/master/setup.sh
 ```
 ```
-pkg install -y git tsu python wpa-supplicant pixiewps iw
-```
-```
-git clone https://github.com/Mahfuz-THBD/Wifi_Hack
-```
-```
-cd Wifi_Hack
-```
-```
-chmod +x birihack.py
-```
-```
-sudo python birihack.py --help
+bash setup.sh
 ```
 
 #### Example : `sudo python birihack.py -i wlan0 -K`
