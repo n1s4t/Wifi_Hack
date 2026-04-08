@@ -15,6 +15,9 @@ from datetime import datetime
 import collections
 import statistics
 import csv
+import qrcode
+import pyqrcode
+import time
 from typing import Dict
 
 print('''
@@ -578,6 +581,13 @@ class Companion:
         print(f"[+] WPS PIN: '{wps_pin}'")
         print(f"[+] WPA PSK: '{wpa_psk}'")
         print(f"[+] AP SSID: '{essid}'")
+        
+        # Generate Wi-Fi QR code string
+        qr_text = f"WIFI:T:WPA;S:{essid};P:{wpa_psk};;"
+        qr = pyqrcode.create(qr_text)
+        # Print QR code in terminal
+        print("\n[+] Scan this QR code to connect:")
+        print(qr.terminal(quiet_zone=1))
 
     def __saveResult(self, bssid, essid, wps_pin, wpa_psk):
         if not os.path.exists(self.reports_dir):
@@ -596,7 +606,7 @@ class Companion:
                 csvWriter.writerow(['Date', 'BSSID', 'ESSID', 'WPS PIN', 'WPA PSK'])
             csvWriter.writerow([dateStr, bssid, essid, wps_pin, wpa_psk])
         print(f'[i] Credentials saved to {filename}.txt, {filename}.csv')
-
+        
     def __savePin(self, bssid, pin):
         filename = self.pixiewps_dir + '{}.run'.format(bssid.replace(':', '').upper())
         with open(filename, 'w') as file:
@@ -809,7 +819,7 @@ class Companion:
 
 
 class WiFiScanner:
-    """docstring for WiFiScanner"""
+      """docstring for WiFiScanner"""
     def __init__(self, interface, vuln_list=None):
         self.interface = interface
         self.vuln_list = vuln_list
@@ -1190,3 +1200,4 @@ if __name__ == '__main__':
 
     if args.iface_down:
         ifaceUp(args.interface, down=True)
+        
