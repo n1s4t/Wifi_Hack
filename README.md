@@ -15,7 +15,7 @@ wget https://raw.githubusercontent.com/n1s4t/Youtube-dl/master/setup.sh
 bash setup.sh
 ```
 
-#### Example : `sudo python birihack.py -i wlan0 -K`
+#### Example : `sudo python wps-wifi.py -i wlan0 -K`
 
 #### Note: 
 **First turn off your Wifi.**
