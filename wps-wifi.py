@@ -15,7 +15,6 @@ from datetime import datetime
 import collections
 import statistics
 import csv
-import qrcode
 import pyqrcode
 import time
 from typing import Dict
